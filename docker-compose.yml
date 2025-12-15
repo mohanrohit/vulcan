@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  api:
+    build: ./platform_api
+
+    ports:
+      - "5000:5000"
+
+    environment:
+      - VULCAN_ENV=development
+      - PORT=5000

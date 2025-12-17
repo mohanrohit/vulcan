@@ -1,9 +1,15 @@
 from flask import Flask
+from flask import request
 
 from datetime import datetime, timezone
 
 
+from tasks import tasks_api
+
+
 app = Flask(__name__)
+
+app.register_blueprint(tasks_api)
 
 
 @app.get("/health")
@@ -19,4 +25,15 @@ def health():
 
 @app.get("/")
 def index():
-    return { "message": "Hello, World!" }
+    now = datetime.now(timezone.utc).isoformat()
+
+    print(f"[{now}] request from {request.remote_addr}")
+
+    return {
+        "service": "tasks-api",
+        "version": "0.1.0",
+        "timestamp": now,
+        "endpoints": {
+            "tasks": "/tasks"
+        }
+    }

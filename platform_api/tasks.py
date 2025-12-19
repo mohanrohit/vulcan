@@ -23,40 +23,6 @@ def list_tasks():
     return { "tasks": tasks }
 
 
-@tasks_api.post("")
-def create_task():
-    schema = z.object({
-        "name": (
-            z.string().transform(str.strip)
-            .refine(lambda name: len(name) > 0, message="We need a name for your new task")
-        ),
-        "description": z.string().transform(str.strip).optional(),
-        "due_by": z.datetime().optional(),
-        "completed_at": z.datetime().optional()
-    })
-
-
-    try:
-        data = schema.parse(request.json)
-    except z.ZodError as e:
-        return { "error": e.issues[0]["message"] }, 422
-
-    db_task = db.Task(
-        name=data["name"],
-        description=data.get("description"),
-        due_by=data.get("due_by"),
-        completed_at=data.get("completed_at")
-    )
-
-    with db.session() as session:
-        session.add(db_task)
-        session.commit()
-
-        new_task = Task.model_validate(db_task)
-
-    return new_task.dict(), 201
-
-
 @tasks_api.get("/<int:task_id>")
 def get_task(task_id: int):
     with db.session() as session:

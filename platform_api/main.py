@@ -1,15 +1,20 @@
 from flask import Flask
-from flask import request
+from flask import Blueprint
 
 from datetime import datetime, timezone
 
 
+from projects import projects_api
 from tasks import tasks_api
 
 
 app = Flask(__name__)
 
-app.register_blueprint(tasks_api)
+api_v1 = Blueprint("api_v1", __name__, url_prefix="/api/v1")
+api_v1.register_blueprint(projects_api)
+api_v1.register_blueprint(tasks_api)
+
+app.register_blueprint(api_v1)
 
 
 @app.get("/health")
@@ -27,13 +32,12 @@ def health():
 def index():
     now = datetime.now(timezone.utc).isoformat()
 
-    print(f"[{now}] request from {request.remote_addr}")
-
     return {
-        "service": "tasks-api",
+        "service": "platform_api",
         "version": "0.1.0",
         "timestamp": now,
         "endpoints": {
+            "projects": "/projects",
             "tasks": "/tasks"
         }
     }

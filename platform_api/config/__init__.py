@@ -1,6 +1,6 @@
 import os
 
-env = os.getenv("TODO_ENV", "development")
+env = os.getenv("VULCAN_ENV", "development")
 
 if env == "development":
     from .development import *

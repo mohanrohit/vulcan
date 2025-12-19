@@ -3,8 +3,6 @@ import config
 from sqlalchemy import create_engine
 
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import declarative_base
-
 
 engine = create_engine(
     config.DATABASE_URL,
@@ -16,8 +14,6 @@ engine = create_engine(
 
 Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Model = declarative_base()
-
 def session():
     return Session()
 
@@ -26,4 +22,5 @@ from .model import Model
 
 from .timestamp_mixin import TimestampMixin
 
+from .project import Project
 from .task import Task
